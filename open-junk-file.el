@@ -122,6 +122,10 @@
 It can include `format-time-string' format specifications."
   :type 'string  
   :group 'open-junk-file)
+(defcustom open-junk-file-name-curor-placeholder "$0"
+  "placeholder of cursor position can be included in file format."
+  :type 'string  
+  :group 'open-junk-file)
 (defvaralias 'open-junk-file-format 'open-junk-file-directory)
 (defcustom open-junk-file-find-file-function 'find-file-other-window
   "*Function to open junk files."
@@ -136,9 +140,13 @@ For example, in Emacs Lisp programming, use M-x `open-junk-file'
 instead of *scratch* buffer. The junk code is SEARCHABLE."
   (interactive)
   (let* ((file (format-time-string open-junk-file-format (current-time)))
-         (dir (file-name-directory file)))
+         (cur-position (string-match open-junk-file-name-curor-placeholder file))
+         (pholder-removed-file (replace-regexp-in-string open-junk-file-name-curor-placeholder "" file))
+         (init-contents
+          `(,pholder-removed-file . ,(and cur-position (+ cur-position 1))))
+         (dir (file-name-directory pholder-removed-file)))
     (make-directory dir t)
-    (funcall open-junk-file-find-file-function (read-string "Junk Code (Enter extension): " file))))
+    (funcall open-junk-file-find-file-function (read-string "Junk Code (Enter extension): " init-contents))))
 
 ;;;; Bug report
 (defvar open-junk-file-maintainer-mail-address
