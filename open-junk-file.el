@@ -140,13 +140,14 @@ For example, in Emacs Lisp programming, use M-x `open-junk-file'
 instead of *scratch* buffer. The junk code is SEARCHABLE."
   (interactive)
   (let* ((file (format-time-string open-junk-file-format (current-time)))
-         (cur-position (string-match open-junk-file-name-curor-placeholder file))
+         (pholder-position (string-match open-junk-file-name-curor-placeholder file))
          (pholder-removed-file (replace-regexp-in-string open-junk-file-name-curor-placeholder "" file))
          (init-contents
-          `(,pholder-removed-file . ,(and cur-position (+ cur-position 1))))
-         (dir (file-name-directory pholder-removed-file)))
+          `(,pholder-removed-file . ,(and pholder-position (+ pholder-position 1))))
+         (file-path (read-string "Junk Code (Enter extension): " init-contents))
+         (dir (file-name-directory file-path)))
     (make-directory dir t)
-    (funcall open-junk-file-find-file-function (read-string "Junk Code (Enter extension): " init-contents))))
+    (funcall open-junk-file-find-file-function file-path)))
 
 ;;;; Bug report
 (defvar open-junk-file-maintainer-mail-address
