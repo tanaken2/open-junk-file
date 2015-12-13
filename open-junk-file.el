@@ -120,16 +120,16 @@
 (defcustom open-junk-file-format "~/junk/%Y/%m/%d-%H%M%S."
   "*File format to put junk files with directory.
 It can include `format-time-string' format specifications."
-  :type 'string  
+  :type 'string
   :group 'open-junk-file)
 (defcustom open-junk-file-name-curor-placeholder "$0"
   "placeholder of cursor position can be included in file format."
-  :type 'string  
+  :type 'string
   :group 'open-junk-file)
 (defvaralias 'open-junk-file-format 'open-junk-file-directory)
 (defcustom open-junk-file-find-file-function 'find-file-other-window
   "*Function to open junk files."
-  :type 'function  
+  :type 'function
   :group 'open-junk-file)
 
 (defun open-junk-file ()
@@ -144,7 +144,7 @@ instead of *scratch* buffer. The junk code is SEARCHABLE."
          (pholder-removed-file (replace-regexp-in-string open-junk-file-name-curor-placeholder "" file))
          (init-contents
           `(,pholder-removed-file . ,(and pholder-position (+ pholder-position 1))))
-         (file-path (read-string "Junk Code (Enter extension): " init-contents))
+         (file-path (replace-regexp-in-string "[[:space:]]+" "_"  (read-string "Junk Code (Enter extension): " init-contents)))
          (dir (file-name-directory file-path)))
     (make-directory dir t)
     (funcall open-junk-file-find-file-function file-path)))
